@@ -1,0 +1,61 @@
+javascript
+// manifest.json
+{
+  "manifest_version": 3,
+  "name": "YouTube Ad Detector",
+  "version": "1.0",
+  "description": "Detects YouTube ads and reloads the page after 1 second.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
+
+// background.js
+chrome.tabs.onCreated.addListener(function(tab) {
+  chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: detectAd
+  });
+});
+
+function detectAd() {
+  const adElements = document.querySelectorAll('iframe');
+  if (adElements.length > 0) {
+    setTimeout(reloadPage, 1000);
+  }
+}
+
+function reloadPage() {
+  chrome.tabs.reload(null, { force: true });
+}
+
+
+html
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YouTube Ad Detector</title>
+</head>
+<body>
+  <h1>YouTube Ad Detector</h1>
+  <p>This extension detects YouTube ads and reloads the page after 1 second.</p>
+</body>
+</html>
+
+
+**Instructions on how to install the extension on Chrome browser:**
+
+1.  **Save the files:** Save the code above as `manifest.json`, `background.js`, and `popup.html` in a single folder.
+2.  **Open Chrome Extensions page:** Open Chrome and type `chrome://extensions` in the address bar and press Enter.
+3.  **Enable Developer Mode:** In the top left corner, toggle the "Developer mode" switch to ON.
+4.  **Load Unpacked:** Click the "Load unpacked" button.
+5.  **Select the folder:** Browse to the folder where you saved the `manifest.json`, `background.js`, and `popup.html` files and select it.
+6.  **The extension is installed:** The YouTube Ad Detector extension should now appear in your Chrome extensions toolbar.
